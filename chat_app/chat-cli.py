@@ -30,6 +30,24 @@ class ChatClient:
                 return self.inbox()
             elif (command=='logout'):
                 return self.logout()            
+            elif (command=='create_group'):
+                group = j[1].strip()
+                return self.create_group(group)
+            elif (command=='join_group'):
+                group = j[1].strip()
+                return self.join_group(group)
+            elif (command=='send_group'):
+                group = j[1].strip()
+                message =""
+                for i in j[2:]:
+                    message="{} {}" . format(message,i)
+                return self.sendmessage_group(group,message)
+            elif (command=='inbox_group'):
+                group = j[1].strip()
+                return self.inbox_group(group)
+            elif (command=='leave_group'):
+                group = j[1].strip()
+                return self.leave_group(group)
             else:
                 return "*Maaf, command tidak benar"
         except IndexError:
@@ -88,6 +106,56 @@ class ChatClient:
             return "Successfully logged out."
         else:
             return "500 Internal server error."
+
+            return "Error, file not found"
+    def create_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="create_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+    def join_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="join_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        print(result)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+    def sendmessage_group(self, group_name, message):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="send_group {} {} {} \r\n" .format(group_name, self.tokenid, message)
+        result = self.sendstring(string)
+        print(result)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+    def inbox_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="inbox_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['messages']))
+        else:
+            return "Error, {}" . format(result['message'])
+    def leave_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="leave_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+    
 
 
 

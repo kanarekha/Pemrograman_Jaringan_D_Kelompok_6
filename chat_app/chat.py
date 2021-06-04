@@ -63,13 +63,14 @@ class Chat:
 				for i in j[3:]:
 					message ="{} {}" . format(message,i)
 				logging.warning("GRUP : {} is sending message to group : {}" . format(self.sessions[sessionid]['username'], group))
+				return self.send_group(group, sessionid, message)
 			
 			elif (command == 'inbox_group'):
 				group = j[1].strip()
 				sessionid = j[2].strip()
 				logging.warning(" GRUP : inbox group {}" . format(group))
-			 	return self.inbox_group(group,sessionid)
-			
+				return self.inbox_group(group, sessionid)
+
 			elif (command == 'leave_group'):
 				group = j[1].strip()
 				sessionid = j[2].strip()
@@ -166,6 +167,7 @@ class Chat:
 		if username not in self.groups[group_name]['users']:
 			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
 		return {'status':'OK', 'messages':self.groups[group_name]['log']}
+		
 	def leave_group(self, group_name, sessionid):
 		if group_name not in self.groups:
 			return {'status': 'ERROR', 'message': 'Group tidak ada'}
