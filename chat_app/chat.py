@@ -61,7 +61,7 @@ class Chat:
 				sessionid = j[2].strip()
 				message = ""
 				for i in j[3:]:
-					message ="{} {}" . format(message,w)
+					message ="{} {}" . format(message,i)
 				logging.warning("GRUP : {} is sending message to group : {}" . format(self.sessions[sessionid]['username'], group))
 			
 			elif (command == 'inbox_group'):
@@ -75,7 +75,7 @@ class Chat:
 				sessionid = j[2].strip()
 				logging.warning("GRUP : {} is leaving {}" . format(self.sessions[sessionid]['username'], group))
 				return self.leave_group(group,sessionid)
-				
+
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 		except KeyError:
