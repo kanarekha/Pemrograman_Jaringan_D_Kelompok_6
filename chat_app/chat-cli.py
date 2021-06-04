@@ -29,7 +29,7 @@ class ChatClient:
             elif (command=='inbox'):
                 return self.inbox()
             elif (command=='logout'):
-                return self.logout()
+                return self.logout()            
             else:
                 return "*Maaf, command tidak benar"
         except IndexError:
@@ -76,6 +76,7 @@ class ChatClient:
             return "{}" . format(json.dumps(result['messages']))
         else:
             return "Error, {}" . format(result['message'])
+    
     def logout(self):
         if(self.tokenid==""):
             return "You are not logged in"
@@ -87,6 +88,7 @@ class ChatClient:
             return "Successfully logged out."
         else:
             return "500 Internal server error."
+
 
 
 

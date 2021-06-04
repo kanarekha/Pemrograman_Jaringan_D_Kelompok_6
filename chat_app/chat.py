@@ -43,6 +43,39 @@ class Chat:
 				if(sessionid in self.sessions):
 					del self.sessions[sessionid]
 				return {'status' : 'OK'}
+
+			elif (command=='create_group'):
+				group = j[1].strip()
+				sessionid = j[2].strip()
+				logging.warning("GRUP : creating Group {}." . format(group))
+				return self.create_group(group,sessionid)
+				
+			elif (command == 'join_group'):
+				group = j[1].strip()
+				sessionid = j[2].strip()
+				logging.warning("GRUP : {} is joining {} group" .format(self.sessions[sessionid]['username'],group))
+				return self.join_group(group, sessionid)
+			
+			elif (command == 'send_group'):
+				group = j[1].strip()
+				sessionid = j[2].strip()
+				message = ""
+				for i in j[3:]:
+					message ="{} {}" . format(message,w)
+				logging.warning("GRUP : {} is sending message to group : {}" . format(self.sessions[sessionid]['username'], group))
+			
+			elif (command == 'inbox_group'):
+				group = j[1].strip()
+				sessionid = j[2].strip()
+				logging.warning(" GRUP : inbox group {}" . format(group))
+			 	return self.inbox_group(group,sessionid)
+			
+			elif (command == 'leave_group'):
+				group = j[1].strip()
+				sessionid = j[2].strip()
+				logging.warning("GRUP : {} is leaving {}" . format(self.sessions[sessionid]['username'], group))
+				return self.leave_group(group,sessionid)
+				
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 		except KeyError:
@@ -98,6 +131,50 @@ class Chat:
 				msgs[users].append(s_fr['incoming'][users].get_nowait())
 			
 		return {'status': 'OK', 'messages': msgs}
+
+	
+	def join_group(self, group_name, sessionid):
+		if group_name not in self.groups:
+			return {'status': 'ERROR', 'message': 'Group tidak ada'}
+		username = self.sessions[sessionid]['username']
+		if username in self.groups[group_name]['users']:
+			return {'status': 'ERROR', 'message': 'Kamu sudah ada di grup'}
+		self.groups[group_name]['users'].append(username)
+		return {'status':'OK', 'message': 'Group joined successfully'}
+
+	def create_group(self, group_name, sessionid):
+		if group_name in self.groups:
+			return {'status': 'ERROR', 'message': 'Group sudah ada'}
+		self.groups[group_name] = {'group_name':group_name, 'log':[], 'users':[]}
+		creator = self.sessions[sessionid]['username']
+		self.groups[group_name]['users'].append(creator)
+		return {'status':'OK', 'message': self.groups[group_name]}
+		
+	def send_group(self, group_name, sessionid, message):
+		if group_name not in self.groups:
+			return {'status': 'ERROR', 'message': 'Group tidak ada'}
+		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_name]['users']:
+			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
+		self.groups[group_name]['log'].append({'from':username, 'message':message})
+		return {'status':'OK', 'message': 'Message sent'}
+	
+	def inbox_group(self, group_name, sessionid):
+		if group_name not in self.groups:
+			return {'status': 'ERROR', 'message': 'Group tidak ada'}
+		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_name]['users']:
+			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
+		return {'status':'OK', 'messages':self.groups[group_name]['log']}
+	def leave_group(self, group_name, sessionid):
+		if group_name not in self.groups:
+			return {'status': 'ERROR', 'message': 'Group tidak ada'}
+		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_name]['users']:
+			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
+		self.groups[group_name]['users'].remove(username)
+		return {'status':'OK', 'message':'You left the group'}
+    
 
 
 if __name__=="__main__":
