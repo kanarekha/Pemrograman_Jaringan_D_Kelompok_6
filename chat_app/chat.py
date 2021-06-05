@@ -14,6 +14,11 @@ class Chat:
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
 	
+	def getUsers(self):
+		return self.users
+	
+	
+	
 	def proses(self,data):
 		j=data.split(" ")
 		try:

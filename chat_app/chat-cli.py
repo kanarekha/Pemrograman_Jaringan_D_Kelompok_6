@@ -127,6 +127,7 @@ class ChatClient:
             return "{}" . format(json.dumps(result['message']))
         else:
             return "Error, {}" . format(result['message'])
+
     def sendmessage_group(self, group_name, message):
         if (self.tokenid==""):
             return "Error, not authorized"
@@ -137,6 +138,7 @@ class ChatClient:
             return "{}" . format(json.dumps(result['message']))
         else:
             return "Error, {}" . format(result['message'])
+            
     def inbox_group(self, group_name):
         if (self.tokenid==""):
             return "Error, not authorized"
