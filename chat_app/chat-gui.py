@@ -46,13 +46,13 @@ class ChatClient:
                                  height=False)
         self.loginpage.configure(width=400,
                                  height=300,
-                                 bg = "#493323")
+                                 bg = "#301b3f")
         # create a Label
         self.pls = Label(self.loginpage,
                          text="Silahkan login ",
                          font="Montserrat 14 bold",
-                         bg ='#493323',
-                         fg='#ffdf91')
+                         bg ='#301b3f',
+                         fg='#b4a5a5')
 
         self.pls.place(relheight=0.15,
                        relx=0.29,
@@ -61,8 +61,8 @@ class ChatClient:
         self.labelName = Label(self.loginpage,
                                text="Username: ",
                                font="Helvetica 12",
-                               bg = '#493323',
-                               fg='#ffdf91')
+                               bg = '#301b3f',
+                               fg='#b4a5a5')
 
         self.labelName.place(relheight=0.2,
                              relx=0.1,
@@ -71,8 +71,8 @@ class ChatClient:
         # create a entry box for
         self.entryName = Entry(self.loginpage,
                                font="Helvetica 14",
-                               bg ='#91684a',
-                                fg='#ffdf91')
+                               bg ='#3c415c',
+                                fg='#b4a5a5')
 
         self.entryName.place(relwidth=0.5,
                              relheight=0.12,
@@ -83,8 +83,8 @@ class ChatClient:
         self.labelPass = Label(self.loginpage,
                                text="Password: ",
                                font="Helvetica 12",
-                                fg='#ffdf91',
-                                bg = '#493323')
+                                fg='#b4a5a5',
+                                bg = '#301b3f')
 
         self.labelPass.place(relheight=0.2,
                              relx=0.1,
@@ -93,8 +93,8 @@ class ChatClient:
         # create a entry box for pass
         self.entryPass = Entry(self.loginpage,
                                font="Helvetica 14",
-                                bg ='#91684a',
-                                fg='#ffdf91')
+                                bg ='#3c415c',
+                                fg='#b4a5a5')
 
         self.entryPass.place(relwidth=0.5,
                              relheight=0.12,
@@ -110,7 +110,7 @@ class ChatClient:
                          text="Login",
                          font="Helvetica 14 bold",
                          bg="#eaac7f",
-                         fg='#493323',
+                         fg='#301b3f',
                          command=lambda: self.loginto(self.entryName.get(), self.entryPass.get()))
 
         self.go.place(relx=0.35,
@@ -145,27 +145,29 @@ class ChatClient:
         else:
             return "Error, {}" . format(result['message'])
     
+    
+    # show users and group
     def chatlist(self, name):
         self.name = name
         # to show chat window
         self.Window.deiconify()
-        self.Window.title("Menu Chat")
+        self.Window.title("Menu")
         self.Window.resizable(width=False,
                               height=False)
         self.Window.configure(width=470,
-                              height=650,
-                              bg="#17202A")
+                              height=600,
+                              bg="#151515")
         self.labelHead = Label(self.Window,
-                               bg="#17202A",
-                               fg="#EAECEE",
-                               text="login sebagai " + self.name,
+                               bg="#151515",
+                               fg="#b4a5a5",
+                               text="Hai " + self.name,
                                font="Helvetica 13 bold",
                                pady=5)
 
-        self.labelHead.place(relwidth=1)
+        self.labelHead.place(relwidth=1,rely=0.01)
         self.line = Label(self.Window,
                           width=450,
-                          bg="#ABB2B9")
+                          bg="#301b3f")
 
         self.line.place(relwidth=1,
                         rely=0.07,
@@ -173,8 +175,9 @@ class ChatClient:
 
         # label
         self.labellist = Label(self.line,
-                               text="List Chat",
-                               bg="#ABB2B9",
+                               text="List Teman",
+                               bg="#301b3f",
+                               fg = '#b4a5a5',
                                font="Helvetica 20")
 
         self.labellist.place(relheight=0.0005,
@@ -192,7 +195,8 @@ class ChatClient:
                                        text=v["nama"],
                                        font="Helvetica 10 bold",
                                        width=20,
-                                       bg="#FFFFFF",
+                                       bg="#3c415c",
+                                       fg = "#b4a5a5",
                                        command=lambda receiver=k, receivername=v["nama"]: self.sendto(name,
                                                                                                       receivername,
                                                                                                       receiver))
@@ -204,17 +208,17 @@ class ChatClient:
             x = x + 0.0008
 
         # Bikin Grup Baru
-        self.buttongrups = Button(self.line,
-                                  text="Buat Grup",
-                                  font="Helvetica 10 bold",
-                                  width=20,
-                                  bg="#FFFFFF",
-                                  command=lambda: self.createegroup())
+        # self.buttongrups = Button(self.line,
+        #                           text="Buat Grup",
+        #                           font="Helvetica 10 bold",
+        #                           width=20,
+        #                           bg="#FFFFFF",
+        #                           command=lambda: self.createegroup())
 
-        self.buttongrups.place(relx=0.1,
-                               rely=0.0008 + x,
-                               relheight=0.0006,
-                               relwidth=0.8)
+        # self.buttongrups.place(relx=0.1,
+        #                        rely=0.0008 + x,
+        #                        relheight=0.0006,
+        #                        relwidth=0.8)
 
         # # create a scroll bar
         # scrollbar = Scrollbar(self.line)
@@ -240,11 +244,11 @@ class ChatClient:
                               height=False)
         self.Window.configure(width=470,
                               height=550,
-                              bg="#17202A")
+                              bg="#301b3f")
         self.labelHead = Label(self.Window,
-                               bg="#17202A",
+                               bg="#301b3f",
                                fg="#EAECEE",
-                               text="Kirim pesan ke " + receivername,
+                               text= receivername,
                                font="Helvetica 13 bold",
                                pady=5)
 
@@ -252,13 +256,13 @@ class ChatClient:
 
         # tombol kembali
         self.buttonBack = Button(self.Window,
-                                 text="Kembali",
+                                 text="<=",
                                  font="Helvetica 10 bold",
                                  width=20,
                                  bg="#ABB2B9",
                                  command=lambda: self.backtochatlist(username))
 
-        self.buttonBack.place(relwidth=0.2, relx=0.8)
+        self.buttonBack.place(relwidth=0.2, relx=0.05,rely=0.01)
 
         # garis
         self.line = Label(self.Window,
@@ -272,7 +276,7 @@ class ChatClient:
         self.textCons = Text(self.Window,
                              width=20,
                              height=2,
-                             bg="#17202A",
+                             bg="#301b3f",
                              fg="#EAECEE",
                              font="Helvetica 14",
                              padx=5,
@@ -309,28 +313,7 @@ class ChatClient:
                            rely=0.02,
                            relx=0.011)
 
-        # kolom receiver
-
-        # self.entryRcv = Entry(self.labelBottom,
-        #                       bg="#2C3E50",
-        #                       fg="#EAECEE",
-        #                       font="Helvetica 13",
-        #                       text=receiver)
-        # self.labelPassRcv = Label(self.labelBottom,
-        #                        text="Penerima: ",
-        #                        bg="#ABB2B9",
-        #                        font="Helvetica 10")
-        #
-        # self.labelPassRcv.place(relheight=0.02,
-        #                     rely=0,
-        #                     relx=0.011)
-        #
-        # self.entryRcv.place(relwidth=0.74,
-        #                     relheight=0.02,
-        #                     rely=0.02,
-        #                     relx=0.011)
-
-        # nama file
+        
         self.labelPassFile = Label(self.labelBottom,
                                    text="File: ",
                                    bg="#ABB2B9",
@@ -379,32 +362,32 @@ class ChatClient:
                             relwidth=0.22)
 
         # create a Send File Button
-        self.buttonMsg2 = Button(self.labelBottom,
-                                 text="Unggah File",
-                                 font="Helvetica 10 bold",
-                                 width=20,
-                                 bg="#ABB2B9",
-                                 command=self.browse_file)
+        # self.buttonMsg2 = Button(self.labelBottom,
+        #                          text="Unggah File",
+        #                          font="Helvetica 10 bold",
+        #                          width=20,
+        #                          bg="#ABB2B9",
+        #                          command=self.browse_file)
 
-        self.buttonMsg2.place(relx=0.77,
-                              rely=0.1,
-                              relheight=0.021,
-                              relwidth=0.22)
+        # self.buttonMsg2.place(relx=0.77,
+        #                       rely=0.1,
+        #                       relheight=0.021,
+        #                       relwidth=0.22)
 
         # create a Send File Button
-        self.buttonMsg3 = Button(self.labelBottom,
-                                 text="Kirim File",
-                                 font="Helvetica 10 bold",
-                                 width=20,
-                                 bg="#ABB2B9",
-                                 command=lambda: self.filehandler(receiver, self.filename))
+        # self.buttonMsg3 = Button(self.labelBottom,
+        #                          text="Kirim File",
+        #                          font="Helvetica 10 bold",
+        #                          width=20,
+        #                          bg="#ABB2B9",
+        #                          command=lambda: self.filehandler(receiver, self.filename))
 
-        self.buttonMsg3.place(relx=0.77,
-                              rely=0.126,
-                              relheight=0.021,
-                              relwidth=0.22)
+        # self.buttonMsg3.place(relx=0.77,
+        #                       rely=0.126,
+        #                       relheight=0.021,
+        #                       relwidth=0.22)
 
-        self.textCons.config(cursor="arrow")
+        # self.textCons.config(cursor="arrow")
 
         # create a scroll bar
         scrollbar = Scrollbar(self.textCons)
@@ -446,6 +429,11 @@ class ChatClient:
         else:
             return "Error, {}" . format(result['message'])
     
+    def backtochatlist(self, name):
+            # self.chatopen = False
+            self.receiverid = ""
+            self.chatlist(name)
+
     def sendstring(self,string):
         try:
             self.sock.sendall(string.encode())
@@ -466,18 +454,96 @@ class ChatClient:
             while True:
                 print(self.inbox().strip())
                 time.sleep(1)
-                # if self.chatopen == False :
-                #     break
-                # try:
-                #
-                #     print(self.inbox().strip())
-                # except:
-                #     # an error will be printed on the command line or console if there's an error
-                #     break
+                if self.chatopen == False :
+                    break
+                try:
+                
+                    print(self.inbox().strip())
+                except:
+                    # an error will be printed on the command line or console if there's an error
+                    break
+    
+    def proses(self, cmdline):
+        j = cmdline.split(" ")
+        try:
+            command = j[0].strip()
+            if (command == 'auth'):
+                username = j[1].strip()
+                password = j[2].strip()
+                return self.login(username, password)
+            elif (command == 'send'):
+                usernameto = j[1].strip()
+                message = ""
+                for w in j[2:]:
+                    message = "{} {}".format(message, w)
+                return self.sendmessage(usernameto, message)
+            elif (command == 'inbox'):
+                return self.inbox()
+        except IndexError:
+            return "-Maaf, Command tidak benar"
+            
+    def inbox(self):
+        if (self.tokenid == ""):
+            return "Error, not authorized"
+        string = "inbox {} \r\n".format(self.tokenid)
+        result = self.sendstring(string)
+        if result['status'] == 'OK':
+            for k, v in result['messages'].items():
+                if v:
+                    if k == self.receiverid:
+                        # print(" ".format(json.dumps(v[0])))
+                        self.textCons.config(state=NORMAL)
+                        self.textCons.insert(END,
+                                             self.receiverwho + " :" + v[0].get('msg'))
 
+                        self.textCons.config(state=DISABLED)
+                        self.textCons.see(END)
+            return "{}".format(json.dumps(result['messages']))
+        else:
+            tkinter.messagebox.showinfo('Error', 'Inbox Gagal Dibuka')
+            return "Error, {}".format(result['message'])
+    
+    def sendmessage_group(self, group_name, message):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="send_group {} {} {} \r\n" .format(group_name, self.tokenid, message)
+        result = self.sendstring(string)
+        print(result)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+            
+    def inbox_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="inbox_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['messages']))
+        else:
+            return "Error, {}" . format(result['message'])
+    def leave_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="leave_group {} {} \r\n" .format(group_name, self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
 
-
-
+    def logout(self):
+        if(self.tokenid==""):
+            return "You are not logged in"
+        string="logout {} \r\n" .format(self.tokenid)
+        result = self.sendstring(string)
+        if result['status']=='OK':
+            #print self.tokenid
+            self.tokenid = ""
+            return "Successfully logged out."
+        else:
+            return "500 Internal server error."
 
 
 

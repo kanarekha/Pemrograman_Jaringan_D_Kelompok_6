@@ -107,7 +107,6 @@ class ChatClient:
         else:
             return "500 Internal server error."
 
-            return "Error, file not found"
     def create_group(self, group_name):
         if (self.tokenid==""):
             return "Error, not authorized"

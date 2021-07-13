@@ -13,11 +13,12 @@ class Chat:
 		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
-	
+		self.users['dohan']={ 'nama': 'Dohan Pranata', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
+		self.users['catherine']={ 'nama': 'Catherine', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
+		self.users['kana']={ 'nama': 'Kana Rekha', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
+		
 	def getUsers(self):
 		return self.users
-	
-	
 	
 	def proses(self,data):
 		j=data.split(" ")
