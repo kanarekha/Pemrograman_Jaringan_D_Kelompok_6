@@ -30,8 +30,6 @@ class ProcessTheClient(threading.Thread):
 						if(data_balasan == ''):
 							break
 						self.connection.sendall(data_balasan)
-					# logging.warning(data)
-					# logging.warning(data_balasan)
 				else:
 					break
 			except OSError as e:
@@ -48,7 +46,7 @@ class Server(threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		self.my_socket.bind(('0.0.0.0', 18000))
+		self.my_socket.bind(('0.0.0.0', 8080))
 		self.my_socket.listen(1)
 		while True:
 			self.connection, self.client_address = self.my_socket.accept()

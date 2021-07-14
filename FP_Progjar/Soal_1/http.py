@@ -71,7 +71,7 @@ class HttpServer:
 		for i in range(0, len(files)):
 			files[i] = Path(files[i])
 		dir=Path('./')
-		return self.response(200,'OK','Bismillah Bisa',dict())
+		return self.response(200,'OK','Yuk Bisa Yuk :)',dict())
 		
 	def http_post(self,object_address,headers):
 		headers ={}
@@ -79,19 +79,12 @@ class HttpServer:
 		return self.response(200,'OK',isi,headers)
 		
 			 	
-#>>> import os.path
-#>>> ext = os.path.splitext('/ak/52.png')
 
 if __name__=="__main__":
 	httpserver = HttpServer()
 	d = httpserver.proses('GET / HTTP/1.0')
 	print(d)
-	# d = httpserver.proses('GET donalbebek.jpg HTTP/1.0')
-	# print(d)
-	#d = httpserver.http_get('testing2.txt',{})
-	#print(d)
-	# d = httpserver.proses('GET testing.txt HTTP/1.0')
-	# print(d)
+	
 
 
 
