@@ -71,7 +71,7 @@ class HttpServer:
 			files[i] = Path(files[i])
 		dir=Path('./')
 		if (object_address == '/'):
-			return self.response(200,'OK','ini server http',dict())
+			return self.response(200,'OK','Hello World!',dict())
 
 		object_address=object_address[1:]
 		print(dir / object_address)
