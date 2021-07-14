@@ -14,6 +14,7 @@ class HttpServer:
 		self.types['.jpg']='image/jpeg'
 		self.types['.txt']='text/plain'
 		self.types['.html']='text/html'
+
 	def response(self,kode=404,message='Not Found',messagebody=bytes(),headers={}):
 		tanggal = datetime.now().strftime('%c')
 		resp=[]
@@ -70,6 +71,7 @@ class HttpServer:
 		for i in range(0, len(files)):
 			files[i] = Path(files[i])
 		dir=Path('./')
+		
 		if (object_address == '/'):
 			list_dir_message = ''
 			for file in files:

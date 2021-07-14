@@ -1,3 +1,4 @@
+from enum import Flag
 import sys
 import os
 import json
@@ -10,15 +11,10 @@ class Chat:
 		self.sessions={}
 		self.users = {}
 		self.groups = {}
-		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
-		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
-		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
-		self.users['dohan']={ 'nama': 'Dohan Pranata', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
-		self.users['catherine']={ 'nama': 'Catherine', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
-		self.users['kana']={ 'nama': 'Kana Rekha', 'negara': 'Indonesia', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
-		
-	def getUsers(self):
-		return self.users
+		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}, 'files': {}}
+		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}, 'files': {}}
+		self.users['lineker']={'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing': {}, 'files': {}}
+		self.groups['group1']={'nama': 'Group 1','member': ['messi','henderson','lineker']}
 	
 	def proses(self,data):
 		j=data.split(" ")
@@ -43,53 +39,54 @@ class Chat:
 				username = self.sessions[sessionid]['username']
 				logging.warning("INBOX: {}" . format(sessionid))
 				return self.get_inbox(username)
-
-			elif (command == 'logout'): 
+			elif (command=='send_group'):
 				sessionid = j[1].strip()
-				if(sessionid in self.sessions):
-					del self.sessions[sessionid]
-				return {'status' : 'OK'}
-
-			elif (command=='create_group'):
-				group = j[1].strip()
-				sessionid = j[2].strip()
-				logging.warning("GRUP : creating Group {}." . format(group))
-				return self.create_group(group,sessionid)
+				groupto = j[2].strip()
+				usernamefrom = self.sessions[sessionid]['username']
+				message=""
+				for w in j[3:]:
+					message="{} {}" . format(message,w)
+				logging.warning("SEND: session {} send message from {} to group {}" . format(sessionid, usernamefrom, groupto))
+				return self.send_groupmessage(sessionid,usernamefrom,groupto,message)
+			elif (command=='send_file'):
+				sessionid = j[1].strip()
+				usernameto = j[2].strip()
+				filename = j[3].strip()
+				message=""
+				for w in j[4:-1]:
+					message="{}{}" . format(message,w)
 				
-			elif (command == 'join_group'):
-				group = j[1].strip()
-				sessionid = j[2].strip()
-				logging.warning("GRUP : {} is joining {} group" .format(self.sessions[sessionid]['username'],group))
-				return self.join_group(group, sessionid)
-			
-			elif (command == 'send_group'):
-				group = j[1].strip()
-				sessionid = j[2].strip()
-				message = ""
-				for i in j[3:]:
-					message ="{} {}" . format(message,i)
-				logging.warning("GRUP : {} is sending message to group : {}" . format(self.sessions[sessionid]['username'], group))
-				return self.send_group(group, sessionid, message)
-			
-			elif (command == 'inbox_group'):
-				group = j[1].strip()
-				sessionid = j[2].strip()
-				logging.warning(" GRUP : inbox group {}" . format(group))
-				return self.inbox_group(group, sessionid)
-
-			elif (command == 'leave_group'):
-				group = j[1].strip()
-				sessionid = j[2].strip()
-				logging.warning("GRUP : {} is leaving {}" . format(self.sessions[sessionid]['username'], group))
-				return self.leave_group(group,sessionid)
-
+				usernamefrom = self.sessions[sessionid]['username']
+				logging.warning("SEND: session {} send file {} from {} to {} with data {}" . format(sessionid, filename, usernamefrom, usernameto, message))
+				return self.send_file(sessionid,usernamefrom,usernameto,filename,message)
+			elif (command=='send_group_file'):
+				sessionid = j[1].strip()
+				groupto = j[2].strip()
+				filename = j[3].strip()
+				message=""
+				for w in j[4:-1]:
+					message="{}{}" . format(message,w)
+				usernamefrom = self.sessions[sessionid]['username']
+				logging.warning("SEND: session {} send file {} from {} to group {} with data {}" . format(sessionid, filename, usernamefrom, groupto, message))
+				return self.send_group_file(sessionid, usernamefrom, groupto, filename, message)
+			elif (command=='my_file'):
+				sessionid = j[1].strip()
+				logging.warning("FILES: session {}" . format(sessionid))
+				username = self.sessions[sessionid]['username']
+				return self.my_file(sessionid, username)
+			elif (command=='download_file'):
+				sessionid = j[1].strip()
+				usernameto = j[2].strip()
+				filename = j[3].strip()
+				logging.warning("DOWNLOAD: session {} file {}" . format(sessionid, filename))
+				username = self.sessions[sessionid]['username']
+				return self.download_file(sessionid, username, usernameto, filename)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 		except KeyError:
 			return { 'status': 'ERROR', 'message' : 'Informasi tidak ditemukan'}
 		except IndexError:
 			return {'status': 'ERROR', 'message': '--Protocol Tidak Benar'}
-	
 	def autentikasi_user(self,username,password):
 		if (username not in self.users):
 			return { 'status': 'ERROR', 'message': 'User Tidak Ada' }
@@ -98,12 +95,14 @@ class Chat:
 		tokenid = str(uuid.uuid4()) 
 		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username]}
 		return { 'status': 'OK', 'tokenid': tokenid }
-	
 	def get_user(self,username):
 		if (username not in self.users):
 			return False
 		return self.users[username]
-	
+	def get_group(self,group):
+		if(group not in self.groups):
+			return False
+		return self.groups[group]
 	def send_message(self,sessionid,username_from,username_dest,message):
 		if (sessionid not in self.sessions):
 			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
@@ -127,6 +126,111 @@ class Chat:
 			inqueue_receiver[username_from]=Queue()
 			inqueue_receiver[username_from].put(message)
 		return {'status': 'OK', 'message': 'Message Sent'}
+	def send_groupmessage(self, sessionid, username_from, group_to, message):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_fr = self.get_user(username_from)
+		s_gr = self.get_group(group_to)
+
+		if (s_fr==False):
+			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
+
+		if (s_gr==False):
+			return {'status': 'ERROR', 'message': 'Group Tidak Ditemukan'}
+
+		outqueue_sender = s_fr['outgoing']
+		message_out = {'msg_from': s_fr['nama'], 'msg_to': s_gr['nama'], 'msg': message}
+		try:	
+			outqueue_sender[username_from].put(message_out)
+		except KeyError:
+			outqueue_sender[username_from]=Queue()
+			outqueue_sender[username_from].put(message_out)
+
+		for member in s_gr['member']:
+			if(member == username_from):
+				continue
+			s_to = self.get_user(member)
+			if(s_to==False):
+				continue
+			message_in = {'msg_from': s_fr['nama'], 'msg_to': s_to['nama'], 'msg': message}
+			inqueue_receiver = s_to['incoming']
+			try:
+				inqueue_receiver[group_to].put(message_in)
+			except KeyError:
+				inqueue_receiver[group_to]=Queue()
+				inqueue_receiver[group_to].put(message_in)
+		
+		return {'status': 'OK', 'message': 'Message Sent'}
+	def send_file(self, sessionid, username_from, username_dest, filename, message):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_fr = self.get_user(username_from)
+		s_to = self.get_user(username_dest)
+		if (s_fr==False or s_to==False):
+			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
+
+		try : 
+			s_to['files'][username_from][filename] = message
+		except KeyError:
+			s_to['files'][username_from] = {}
+			s_to['files'][username_from][filename] = message
+
+		try : 
+			s_fr['files'][username_dest][filename] = message
+		except KeyError:
+			s_fr['files'][username_dest] = {}
+			s_fr['files'][username_dest][filename] = message
+
+		return {'status': 'OK', 'message': 'File Sent'}
+	def send_group_file(self, sessionid, username_from, group_dest, filename, message):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_fr = self.get_user(username_from)
+		s_gr = self.get_group(group_dest)
+		if (s_fr==False):
+			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
+		if (s_gr==False):
+			return {'status': 'ERROR', 'message': 'Group Tidak Ditemukan'}
+
+		try : 
+			s_fr['files'][group_dest][filename] = message
+		except KeyError:
+			s_fr['files'][group_dest] = {}
+			s_fr['files'][group_dest][filename] = message
+
+		for member in s_gr['member']:
+			s_to = self.get_user(member)
+			if(s_to==False):
+				continue
+			try : 
+				s_to['files'][group_dest][filename] = message
+			except KeyError:
+				s_to['files'][group_dest] = {}
+				s_to['files'][group_dest][filename] = message
+			
+
+		return {'status': 'OK', 'message': 'File Sent'}
+	def my_file(self, sessionid, username):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_usr = self.get_user(username)
+		files = s_usr['files']
+		msgs = {}
+		for user in files:
+			msgs[user] = []
+			for file in files[user] :
+				msgs[user].append(file)
+		return {'status': 'OK', 'messages': msgs}
+	def download_file(self, sessionid, username, usernameto, filename):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_usr = self.get_user(username)
+		if(usernameto not in s_usr['files']):
+			return {'status': 'ERROR', 'message': 'File Tidak Ditemukan'}
+		if filename not in s_usr['files'][usernameto]:
+			return {'status': 'ERROR', 'message': 'File Tidak Ditemukan'}
+		data = s_usr['files'][usernameto][filename]
+		return {'status': 'OK', 'messages': f'Downloaded {filename}', 'filename':f'{filename}', 'data':f'{data}'}
 
 	def get_inbox(self,username):
 		s_fr = self.get_user(username)
@@ -138,51 +242,6 @@ class Chat:
 				msgs[users].append(s_fr['incoming'][users].get_nowait())
 			
 		return {'status': 'OK', 'messages': msgs}
-
-	
-	def join_group(self, group_name, sessionid):
-		if group_name not in self.groups:
-			return {'status': 'ERROR', 'message': 'Group tidak ada'}
-		username = self.sessions[sessionid]['username']
-		if username in self.groups[group_name]['users']:
-			return {'status': 'ERROR', 'message': 'Kamu sudah ada di grup'}
-		self.groups[group_name]['users'].append(username)
-		return {'status':'OK', 'message': 'Group joined successfully'}
-
-	def create_group(self, group_name, sessionid):
-		if group_name in self.groups:
-			return {'status': 'ERROR', 'message': 'Group sudah ada'}
-		self.groups[group_name] = {'group_name':group_name, 'log':[], 'users':[]}
-		creator = self.sessions[sessionid]['username']
-		self.groups[group_name]['users'].append(creator)
-		return {'status':'OK', 'message': self.groups[group_name]}
-		
-	def send_group(self, group_name, sessionid, message):
-		if group_name not in self.groups:
-			return {'status': 'ERROR', 'message': 'Group tidak ada'}
-		username = self.sessions[sessionid]['username']
-		if username not in self.groups[group_name]['users']:
-			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
-		self.groups[group_name]['log'].append({'from':username, 'message':message})
-		return {'status':'OK', 'message': 'Message sent'}
-	
-	def inbox_group(self, group_name, sessionid):
-		if group_name not in self.groups:
-			return {'status': 'ERROR', 'message': 'Group tidak ada'}
-		username = self.sessions[sessionid]['username']
-		if username not in self.groups[group_name]['users']:
-			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
-		return {'status':'OK', 'messages':self.groups[group_name]['log']}
-		
-	def leave_group(self, group_name, sessionid):
-		if group_name not in self.groups:
-			return {'status': 'ERROR', 'message': 'Group tidak ada'}
-		username = self.sessions[sessionid]['username']
-		if username not in self.groups[group_name]['users']:
-			return {'status': 'ERROR', 'message': 'Kamu tidak bergabung di grup'}
-		self.groups[group_name]['users'].remove(username)
-		return {'status':'OK', 'message':'You left the group'}
-    
 
 
 if __name__=="__main__":

@@ -16,9 +16,7 @@ class ReverseProxy:
 		requests = data.split("\r\n")
 		baris = requests[0]
 
-		all_headers = [n for n in requests[1:] if n!='']
 		j = baris.split(" ")
-		method=j[0].upper().strip()
 		url_address = j[1].strip()
 		if(url_address[-1] != '/'):
 			data = data.replace(url_address, url_address+'/')
