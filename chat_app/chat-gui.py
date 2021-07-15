@@ -36,37 +36,37 @@ class LoginView(QWidget):
         self.initUI()
         
     def initUI(self):
-        self.titleLabel = QLabel("Login", self)
-        self.titleLabel.setFont(QFont("Arial", 28))
+        self.titleLabel = QLabel("Login Page", self)
+        self.titleLabel.setFont(QFont("Arial", 20))
         self.titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # self.setStyleSheet("QLabel {background-color:red;}")
-        self.titleLabel.move(300-int(self.titleLabel.width()/2), 100)
+        self.titleLabel.move(250-int(self.titleLabel.width()/2), 125)
 
         userlabel = QLabel("Username", self)
         userlabel.setFont(QFont("Arial", 14))
-        userlabel.move(300-int(userlabel.width()/2)-60, 200)
+        userlabel.move(250-int(userlabel.width()/2)-60, 200)
 
         passlabel = QLabel("Password", self)
         passlabel.setFont(QFont("Arial", 14))
-        passlabel.move(300-int(passlabel.width()/2)-60, 250)
+        passlabel.move(250-int(passlabel.width()/2)-60, 250)
 
         # Create textbox
         self.userbox = QLineEdit(self)
-        self.userbox.setFont(QFont("Arial", 14))
+        self.userbox.setFont(QFont("Arial", 12))
         self.userbox.resize(150,30)
         self.userbox.move(300-int(self.userbox.width()/2)+60, 200)
 
         # Create textbox
         self.passbox = QLineEdit(self)
-        self.passbox.setFont(QFont("Arial", 14))
+        self.passbox.setFont(QFont("Arial", 12))
         self.passbox.resize(150,30)
         self.passbox.move(300-int(self.passbox.width()/2)+60, 250)
 
         # Create a button in the window
         self.button = QPushButton('Login', self)
-        self.button.setFont(QFont("Arial", 20))
+        self.button.setFont(QFont("Arial", 15))
         self.button.resize(100,50)
-        self.button.move(300-int(self.button.width()/2), 330)
+        self.button.move(300-int(self.button.width()/2), 350)
         
         # # connect button to function on_click
         self.button.clicked.connect(self.login)
